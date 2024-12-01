@@ -3,7 +3,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "args": [],
+            "args": ["--day", "1", "--input-file", "input/day_1.txt"],
             "cwd": "${workspaceFolder:aoc_24}",
             "name": "Debug aoc_24",
             "program": "${workspaceFolder:aoc_24}/.build/debug/aoc_24",
