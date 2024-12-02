@@ -13,9 +13,12 @@ protocol Day {
     func run() throws
 }
 
-let DAYS: Dictionary<UInt8, Day.Type> = [
-    1: Day1.self
-]
+extension AOC24 {
+    static let days: [UInt8: Day.Type] = [
+        1: Day1.self,
+        2: Day2.self
+    ]
+}
 
 @main struct AOC24: ParsableCommand {
     @Option(help: "The day number of the puzzle to run.")
@@ -25,7 +28,7 @@ let DAYS: Dictionary<UInt8, Day.Type> = [
     var inputFile: URL
 
     public func run() throws {
-        guard let dayType = DAYS[day] else {
+        guard let dayType = AOC24.days[day] else {
             fatalError("Could not find `Day` for input: \(day)")
         }
 
