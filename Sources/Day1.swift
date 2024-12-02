@@ -7,7 +7,10 @@ struct Day1: Day {
     }
 
     func run() throws {
-        let (left, right) = enumerateLists(input: input)
+        let lines: [[UInt]] = input.split(separator: "\n").map {
+            String($0).split(separator: " ").compactMap { UInt($0) }
+        }
+        let (left, right) = enumerateLists(lines: lines)
 
         let part1Result = try part1(left: left, right: right)
         print("1a result: \(part1Result)")
@@ -18,14 +21,13 @@ struct Day1: Day {
 }
 
 extension Day1 {
-    private func enumerateLists(input: String) -> (left: [UInt], right: [UInt]) {
+    private func enumerateLists(lines: [[UInt]]) -> (left: [UInt], right: [UInt]) {
         var leftList = [UInt]()
         var rightList = [UInt]()
 
-        for line in input.split(separator: "\n") {
-            let columns = line.split(separator: " ")
-            leftList.append(UInt(columns[0])!)
-            rightList.append(UInt(columns[1])!)
+        for line in lines {
+            leftList.append(line.first!)
+            rightList.append(line.last!)
         }
 
         precondition(leftList.count == rightList.count, "Lists should be equal in length.")
@@ -39,24 +41,14 @@ extension Day1 {
 
 extension Day1 {
     private func part1(left: [UInt], right: [UInt]) throws -> Int {
-        var distances = [Int]()
-
-        for (idx, value) in left.enumerated() {
-            let distance = abs(value.distance(to: right[idx]))
-            distances.append(distance)
-        }
-
-        return distances.reduce(0, +)
+        left.enumerated().map {
+            abs($0.element.distance(to: right[$0.offset]))
+        }.reduce(0, +)
     }
 
     private func part2(left: [UInt], right: [UInt]) throws -> Int {
-        var score = 0
-
-        for value in left {
-            let count = right.count { $0 == value}
-            score += (Int(value) * count)
-        }
-
-        return score
+        left.map { value in
+            (Int(value) * right.count { $0 == value})
+        }.reduce(0, +)
     }
 }
