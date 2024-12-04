@@ -16,7 +16,8 @@ protocol Day {
 extension AOC24 {
     static let days: [UInt8: Day.Type] = [
         1: Day1.self,
-        2: Day2.self
+        2: Day2.self,
+        3: Day3.self
     ]
 }
 
