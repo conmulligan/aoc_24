@@ -54,47 +54,32 @@ extension Day5 {
     }
 
     private func part1(orderings: [PagePair], updates: [Update]) -> Int {
-        var correctlyOrdered = [Update]()
-
-        for update in updates {
-            if isOrdered(update: update, orderings: orderings) {
-                correctlyOrdered.append(update)
-            }
+        updates.compactMap {
+            isOrdered(update: $0, orderings: orderings) ? $0 : nil
         }
-
-        return correctlyOrdered.map { update in
-            let index = Int((Double(update.count) / 2).rounded(.down))
-            return update[index]
-        }.reduce(0, +)
+        .map { $0[$0.count / 2] }
+        .reduce(0, +)
     }
 
     private func part2(orderings: [PagePair], updates: [Update]) -> Int {
         let (orderings, updates) = parse(input: input)
-        let filteredUpdates = updates.filter {
+
+        return updates.filter {
             !isOrdered(update: $0, orderings: orderings)
-        }
-
-        var correctlyOrdered = [Update]()
-
-        for var update in filteredUpdates {
+        }.map { update in
+            var update = update
             while !isOrdered(update: update, orderings: orderings) {
                 update.enumerated().forEach { index, page in
-                    let orderings = orderings.filter { $0.0 == page }
-                    for ordering in orderings {
-                        if let nextIndex = update.firstIndex(of: ordering.1) {
-                            if index > nextIndex {
-                                update.append(update.remove(at: nextIndex))
-                            }
+                    for ordering in orderings.filter({ $0.0 == page }) {
+                        if let nextIndex = update.firstIndex(of: ordering.1), index > nextIndex {
+                            update.append(update.remove(at: nextIndex))
                         }
                     }
                 }
             }
-            correctlyOrdered.append(update)
+            return update
         }
-
-        return correctlyOrdered.map { update in
-            let index = Int((Double(update.count) / 2).rounded(.down))
-            return update[index]
-        }.reduce(0, +)
+        .map { $0[$0.count / 2] }
+        .reduce(0, +)
     }
 }
